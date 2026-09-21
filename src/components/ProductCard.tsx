@@ -1,10 +1,12 @@
 "use client";
 import Link from "next/link";
 import { Product, money } from "@/lib/products";
+import { addToCart } from "@/lib/store";
 import { useEffect, useState } from "react";
 
 export default function ProductCard({ product }: { product: Product }) {
   const [active, setActive] = useState(false);
+  const [added, setAdded] = useState(false);
   useEffect(() => {
     try {
       setActive(
@@ -24,6 +26,11 @@ export default function ProductCard({ product }: { product: Product }) {
     localStorage.setItem("bayan-favorites", JSON.stringify(next));
     setActive(!active);
     window.dispatchEvent(new Event("bayan-store-update"));
+  };
+  const handleAddToCart = () => {
+    addToCart(product);
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 1500);
   };
   return (
     <article className="product-card">
@@ -70,6 +77,9 @@ export default function ProductCard({ product }: { product: Product }) {
           </div>
         </>
       )}
+      <button className={`product-card__add ${added ? "is-added" : ""}`} onClick={handleAddToCart}>
+        {added ? "Добавлено" : "В корзину"}
+      </button>
     </article>
   );
 }

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import ProductCard from "@/components/ProductCard";
+import ProductSlider from "@/components/ProductSlider";
 import { PRODUCTS } from "@/lib/products";
 
 export default function Home() {
@@ -62,16 +62,8 @@ function ProductStrip({
           <Link className="section-heading__link" href="/catalog">
             {link}
           </Link>
-          <div className="section-heading__controls">
-            <button className="slider-button">‹</button>
-            <button className="slider-button">›</button>
-          </div>
         </div>
-        <div className="product-track">
-          {products.map((product) => (
-            <ProductCard product={product} key={product.id} />
-          ))}
-        </div>
+        <ProductSlider products={products} />
       </div>
     </section>
   );

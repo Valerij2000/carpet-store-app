@@ -1,0 +1,62 @@
+.product-card__add { width: 100%; min-height: 34px; margin-top: 10px; border: 0; border-radius: 5px; background: #6d9988; color: #fff; font-size: 11px; font-weight: 700; }
+.product-card__add:hover { background: #527b6b; }
+.product-card__add.is-added { background: #dc514f; }
+.order-page { max-width: 760px; padding: 44px 0 80px; }
+.order-page__header { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; border-bottom: 1px solid #ededed; padding-bottom: 24px; }
+.order-page__header h2, .order-items h2 { margin: 0 0 8px; }
+.order-page__header p { color: #999; margin: 0; }
+.order-page__header > strong { color: #5e8978; font-size: 20px; white-space: nowrap; }
+.order-timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; list-style: none; padding: 35px 0; margin: 0; }
+.order-timeline li { color: #aaa; position: relative; }
+.order-timeline li:not(:last-child)::after { content: ''; position: absolute; height: 2px; background: #ededed; left: 30px; right: -12px; top: 14px; }
+.order-timeline li.is-complete { color: #5e8978; }
+.order-timeline li.is-complete:not(:last-child)::after { background: #6d9988; }
+.order-timeline span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: #ededed; position: relative; z-index: 1; }
+.order-timeline .is-complete span { background: #6d9988; color: #fff; }
+.order-timeline strong { display: block; margin-top: 10px; font-size: 12px; }
+.order-timeline p { color: #999; font-size: 11px; line-height: 1.4; }
+.order-items { border-top: 1px solid #ededed; padding-top: 24px; }
+.order-item { display: flex; justify-content: space-between; gap: 15px; padding: 12px 0; border-bottom: 1px solid #f1f1f1; }
+@media (max-width: 800px) {
+  .container { width: min(100% - 32px, 1040px); }
+  .header-main { grid-template-columns: 1fr auto; gap: 10px; }
+  .location, .header-main > .search, .main-nav { display: none; }
+  .header-actions { gap: 8px; }
+  .mobile-toggle { display: block; }
+  .mobile-nav { display: none; flex-direction: column; align-items: stretch; gap: 0; padding-bottom: 12px; }
+  .mobile-nav.is-open { display: flex; }
+  .mobile-nav .main-nav__link { padding: 10px 0; }
+  .hero__inner { grid-template-columns: 1fr; min-height: 430px; }
+  .hero__title { font-size: 34px; }
+  .hero__visual { position: absolute; left: 28%; right: 0; top: 190px; height: 230px; padding: 0; gap: 8px; }
+  .hero__rug { width: 135px; height: 190px; }
+  .hero__rug:nth-child(2) { width: 130px; }
+  .hero__price { left: 0; bottom: 15px; width: 120px; }
+  .catalog-layout { grid-template-columns: 1fr; gap: 20px; padding-top: 25px; }
+  .filters { border-right: 0; padding-right: 0; display: flex; gap: 20px; overflow-x: auto; }
+  .filters__group { min-width: 150px; border-bottom: 0; margin: 0; padding: 0; }
+  .catalog-toolbar { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .catalog-toolbar > div:last-child { width: 100%; }
+  .catalog-toolbar .search__input { width: 100% !important; }
+  .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .product-track { grid-auto-columns: minmax(170px, 45vw); gap: 12px; }
+  .product-card { padding-inline: 9px; }
+  .product-card__rating { white-space: normal; }
+  .product-card__installment { display: none; }
+  .product-detail { grid-template-columns: 1fr; gap: 25px; padding-top: 25px; }
+  .product-detail__visual { min-height: 340px; }
+  .product-detail__visual img { width: 220px; height: 300px; }
+  .buy-row { flex-wrap: wrap; }
+  .buy-row .btn--primary { flex: 1; }
+  .order-timeline { grid-template-columns: 1fr; gap: 18px; }
+  .order-timeline li { display: flex; gap: 12px; align-items: flex-start; }
+  .order-timeline li:not(:last-child)::after { width: 2px; height: 18px; left: 14px; top: 30px; right: auto; }
+  .order-timeline strong { margin-top: 6px; }
+}
+@media (max-width: 420px) {
+  .logo__name { font-size: 20px; }
+  .logo__sub { font-size: 9px; }
+  .header-actions .icon-button { padding: 2px; }
+  .page-hero__title { font-size: 26px; }
+  .catalog-grid .product-card { min-height: 0; }
+}
