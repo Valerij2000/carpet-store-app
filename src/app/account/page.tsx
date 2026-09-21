@@ -1,0 +1,3 @@
+"use client";
+import PageHero from "@/components/PageHero";
+export default function Account() { return <main><PageHero title="Личный кабинет" crumbs="Главная / Личный кабинет" /><div className="container form-page"><h2>Вход</h2><form className="form-grid" onSubmit={(e) => { e.preventDefault(); alert("Демо-режим: авторизация будет подключена к API."); }}><div className="form-field form-field--full"><label>Телефон или email</label><input required /></div><div className="form-field form-field--full"><label>Пароль</label><input required type="password" /></div><div className="form-field form-field--full"><button className="btn btn--primary">Войти</button></div></form></div></main>; }
