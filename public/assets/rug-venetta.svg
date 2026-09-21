@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 520">
+<rect width="360" height="520" fill="#ece9df"/><rect x="10" y="10" width="340" height="500" rx="2" fill="#d7d9d4" stroke="#a8a9a2" stroke-width="8"/>
+<g fill="none" stroke="#7d8790" stroke-width="8">
+<path d="M25 90 Q55 55 85 90T145 90T205 90T265 90T335 90"/>
+<path d="M25 155 Q55 120 85 155T145 155T205 155T265 155T335 155"/>
+<path d="M25 220 Q55 185 85 220T145 220T205 220T265 220T335 220"/>
+<path d="M25 285 Q55 250 85 285T145 285T205 285T265 285T335 285"/>
+<path d="M25 350 Q55 315 85 350T145 350T205 350T265 350T335 350"/>
+<path d="M25 415 Q55 380 85 415T145 415T205 415T265 415T335 415"/>
+</g>
+<g fill="#a18d68"><circle cx="72" cy="122" r="5"/><circle cx="168" cy="187" r="5"/><circle cx="280" cy="252" r="5"/><circle cx="112" cy="317" r="5"/><circle cx="225" cy="382" r="5"/></g>
+</svg>
