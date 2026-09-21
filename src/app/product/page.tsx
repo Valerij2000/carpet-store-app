@@ -3,10 +3,89 @@ import { useState } from "react";
 import PageHero from "@/components/PageHero";
 import { findProduct, money, PRODUCTS } from "@/lib/products";
 export default function ProductPage() {
-  const product = findProduct(typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("id")) || PRODUCTS[0];
+  const product =
+    findProduct(
+      typeof window === "undefined"
+        ? null
+        : new URLSearchParams(window.location.search).get("id"),
+    ) || PRODUCTS[0];
   const [quantity, setQuantity] = useState(1);
-  const add = () => { const cart = JSON.parse(localStorage.getItem("bayan-cart") || "[]"); const item = cart.find((x: { id: number }) => x.id === product.id); if (item) item.quantity += quantity; else cart.push({ id: product.id, quantity }); localStorage.setItem("bayan-cart", JSON.stringify(cart)); window.dispatchEvent(new Event("bayan-store-update")); alert("Товар добавлен в корзину"); };
-  const favorite = () => { const favorites: number[] = JSON.parse(localStorage.getItem("bayan-favorites") || "[]"); localStorage.setItem("bayan-favorites", JSON.stringify(favorites.includes(product.id) ? favorites.filter((id) => id !== product.id) : [...favorites, product.id])); window.dispatchEvent(new Event("bayan-store-update")); };
-  return <main><PageHero crumbs="Главная / Каталог / Карточка товара" /><div className="container product-detail"><div className="product-detail__visual"><img src={product.image} alt={product.name} /></div><div><h1 className="product-detail__title">{product.name}</h1><div className="product-detail__sku">Артикул: Q893A</div><div className="product-detail__rating">★ ★ ★ ★ ★ &nbsp; <span style={{ color: "#aaa" }}>0 отзывов</span></div><div className="product-detail__price">{money(product.price)}</div><div className="product-detail__info"><Row name="Размер" value={product.size} /><Row name="Производитель" value={product.country} /><Row name="Материал" value={product.material} /><Row name="Доставка" value="по Алматы и Казахстану" /></div><div className="buy-row"><div className="quantity"><button onClick={() => setQuantity(Math.max(1, quantity - 1))}>−</button><input value={quantity} readOnly aria-label="Количество" /><button onClick={() => setQuantity(quantity + 1)}>+</button></div><button className="btn btn--primary" onClick={add}>Добавить в корзину</button><button className="btn btn--light" onClick={favorite} aria-label="В избранное">♡</button></div><p style={{ color: "#888", lineHeight: 1.7, marginTop: 25 }}>Классический орнамент, спокойная палитра и универсальный размер. Подходит для гостиной, спальни и небольших зон отдыха.</p></div></div></main>;
+  const add = () => {
+    const cart = JSON.parse(localStorage.getItem("bayan-cart") || "[]");
+    const item = cart.find((x: { id: number }) => x.id === product.id);
+    if (item) item.quantity += quantity;
+    else cart.push({ id: product.id, quantity });
+    localStorage.setItem("bayan-cart", JSON.stringify(cart));
+    window.dispatchEvent(new Event("bayan-store-update"));
+    alert("Товар добавлен в корзину");
+  };
+  const favorite = () => {
+    const favorites: number[] = JSON.parse(
+      localStorage.getItem("bayan-favorites") || "[]",
+    );
+    localStorage.setItem(
+      "bayan-favorites",
+      JSON.stringify(
+        favorites.includes(product.id)
+          ? favorites.filter((id) => id !== product.id)
+          : [...favorites, product.id],
+      ),
+    );
+    window.dispatchEvent(new Event("bayan-store-update"));
+  };
+  return (
+    <main>
+      <PageHero crumbs="Главная / Каталог / Карточка товара" />
+      <div className="container product-detail">
+        <div className="product-detail__visual">
+          <img src={product.image} alt={product.name} />
+        </div>
+        <div>
+          <h1 className="product-detail__title">{product.name}</h1>
+          <div className="product-detail__sku">Артикул: Q893A</div>
+          <div className="product-detail__rating">
+            ★ ★ ★ ★ ★ &nbsp; <span style={{ color: "#aaa" }}>0 отзывов</span>
+          </div>
+          <div className="product-detail__price">{money(product.price)}</div>
+          <div className="product-detail__info">
+            <Row name="Размер" value={product.size} />
+            <Row name="Производитель" value={product.country} />
+            <Row name="Материал" value={product.material} />
+            <Row name="Доставка" value="по Алматы и Казахстану" />
+          </div>
+          <div className="buy-row">
+            <div className="quantity">
+              <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>
+                −
+              </button>
+              <input value={quantity} readOnly aria-label="Количество" />
+              <button onClick={() => setQuantity(quantity + 1)}>+</button>
+            </div>
+            <button className="btn btn--primary" onClick={add}>
+              Добавить в корзину
+            </button>
+            <button
+              className="btn btn--light"
+              onClick={favorite}
+              aria-label="В избранное"
+            >
+              ♡
+            </button>
+          </div>
+          <p style={{ color: "#888", lineHeight: 1.7, marginTop: 25 }}>
+            Классический орнамент, спокойная палитра и универсальный размер.
+            Подходит для гостиной, спальни и небольших зон отдыха.
+          </p>
+        </div>
+      </div>
+    </main>
+  );
 }
-function Row({ name, value }: { name: string; value: string }) { return <div className="product-detail__row"><span>{name}</span><span>{value}</span></div>; }
+function Row({ name, value }: { name: string; value: string }) {
+  return (
+    <div className="product-detail__row">
+      <span>{name}</span>
+      <span>{value}</span>
+    </div>
+  );
+}
