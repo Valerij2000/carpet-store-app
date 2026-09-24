@@ -62,7 +62,7 @@ export default function Checkout() {
             <Field label="Имя" />
             <Field label="Телефон" />
             <Field label="Email" type="email" />
-            <Field label="Город" value="Алматы" />
+            <Field label="Город" value="Макеевка" />
             <div className="form-field form-field--full">
               <label>Выберите способ получения товара</label>
               <div className="delivery-options">

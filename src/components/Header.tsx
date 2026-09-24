@@ -51,12 +51,12 @@ export default function Header() {
     <header className="site-header">
       <div className="container header-main">
         <Link className="logo" href="/">
-          <span className="logo__name">BAYAN SÚLU</span>
+          <span className="logo__name">Ковры Дорожки</span>
           <span className="logo__sub">ИНТЕРНЕТ-МАГАЗИН КОВРОВ</span>
         </Link>
         <div className="location">
           <Icon name="pin" />
-          Алматы
+          Макеевка
         </div>
         <form className="search" onSubmit={(event) => event.preventDefault()}>
           <input

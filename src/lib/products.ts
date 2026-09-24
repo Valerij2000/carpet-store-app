@@ -29,7 +29,7 @@ export const PRODUCTS: Product[] = [
 ];
 
 export const money = (value: number) =>
-  `${new Intl.NumberFormat("ru-RU").format(value)} ₸`;
+  `${new Intl.NumberFormat("ru-RU").format(value)} ₽`;
 
 export const findProduct = (id: string | number | null) =>
   PRODUCTS.find((product) => product.id === Number(id));

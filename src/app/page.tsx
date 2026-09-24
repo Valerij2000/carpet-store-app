@@ -18,7 +18,7 @@ export default function Home() {
             </Link>
           </div>
           <div className="hero__visual">
-            <div className="hero__price">160.000 ₸</div>
+            <div className="hero__price">160.000 ₽</div>
             <img
               className="hero__rug"
               src="/assets/rug-navy.svg"

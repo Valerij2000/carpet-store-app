@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import CartToast from "@/components/CartToast";
 
 export const metadata: Metadata = {
-  title: "BAYAN SÚLU — интернет-магазин ковров",
+  title: "Ковры Дорожки Ковролин — интернет-магазин ковров",
   description: "Интернет-магазин ковров, дорожек и ковролина.",
 };
 
@@ -17,7 +17,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
-      <body><Header />{children}<CartToast /><Footer /></body>
+      <body>
+        <Header />
+        {children}
+        <CartToast />
+        <Footer />
+      </body>
     </html>
   );
 }
