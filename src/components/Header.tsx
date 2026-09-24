@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Icon } from "./icons";
+import { readOrders } from "@/lib/store";
 
 const nav = [
   ["Ковры", "/catalog"],
@@ -17,6 +18,7 @@ const nav = [
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [counts, setCounts] = useState({ cart: 0, favorites: 0 });
+  const [activeOrderId, setActiveOrderId] = useState<string | null>(null);
   useEffect(() => {
     const update = () => {
       try {
@@ -31,8 +33,10 @@ export default function Header() {
           ),
           favorites: favorites.length,
         });
+        setActiveOrderId(readOrders()[0]?.id || null);
       } catch {
         setCounts({ cart: 0, favorites: 0 });
+        setActiveOrderId(null);
       }
     };
     update();
@@ -89,6 +93,14 @@ export default function Header() {
           <Link className="icon-button" href="/cart" aria-label="Корзина">
             <Icon name="cart" />
             {counts.cart > 0 && <span className="badge">{counts.cart}</span>}
+          </Link>
+          <Link
+            className="icon-button delivery-button"
+            href={activeOrderId ? `/order/${activeOrderId}` : "/account"}
+            aria-label="Отслеживание заказа"
+            title="Отслеживание заказа"
+          >
+            <Icon name="delivery" />
           </Link>
         </div>
         <button
