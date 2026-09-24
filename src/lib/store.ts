@@ -43,7 +43,14 @@ export const addToCart = (product: Product, quantity = 1) => {
 export const readOrders = (): Order[] => {
   try {
     const value = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]')
-    return Array.isArray(value) ? value : []
+    if (!Array.isArray(value)) return []
+    const activeOrders = value.filter(
+      (order): order is Order => order?.status !== 'Доставлен',
+    )
+    if (activeOrders.length !== value.length) {
+      localStorage.setItem(ORDERS_KEY, JSON.stringify(activeOrders))
+    }
+    return activeOrders
   } catch {
     return []
   }
