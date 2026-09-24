@@ -7,7 +7,9 @@ export default function ProductPage() {
   const [productId, setProductId] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const product = findProduct(productId) || PRODUCTS[0];
+  const images = [product.image, "/assets/rug-cream.svg", "/assets/rug-navy.svg"];
 
   useEffect(() => {
     setProductId(new URLSearchParams(window.location.search).get("id"));
@@ -24,7 +26,6 @@ export default function ProductPage() {
 
   const add = () => {
     addToCart(product, quantity);
-    alert("Товар добавлен в корзину");
   };
   const favorite = () => {
     const favorites: number[] = JSON.parse(
@@ -41,8 +42,23 @@ export default function ProductPage() {
     <main>
       <PageHero crumbs="Главная / Каталог / Карточка товара" />
       <div className="container product-detail">
-        <div className="product-detail__visual">
-          <img key={product.id} src={product.image} alt={product.name} />
+        <div className="product-detail__gallery">
+          <div className="product-detail__thumbs" aria-label="Фотографии товара">
+            {images.map((image, index) => (
+              <button
+                className={selectedImageIndex === index ? "is-active" : ""}
+                key={`${image}-${index}`}
+                onClick={() => setSelectedImageIndex(index)}
+                aria-label={`Показать вид ${index + 1}`}
+                aria-pressed={selectedImageIndex === index}
+              >
+                <img src={image} alt={`${product.name}, вид ${index + 1}`} />
+              </button>
+            ))}
+          </div>
+          <div className="product-detail__visual">
+            <img key={`${product.id}-${selectedImageIndex}`} src={images[selectedImageIndex]} alt={`${product.name}, вид ${selectedImageIndex + 1}`} />
+          </div>
         </div>
         <div>
           <h1 className="product-detail__title">{product.name}</h1>

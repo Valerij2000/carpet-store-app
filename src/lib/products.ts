@@ -11,6 +11,12 @@ export type Product = {
   category: string;
 };
 
+export const productSlug = (product: Product) =>
+  `${product.id}-${product.name.toLowerCase().replace(/[^a-zа-яё0-9]+/gi, "-").replace(/(^-|-$)/g, "")}`;
+
+export const findProductBySlug = (slug: string | null) =>
+  PRODUCTS.find((product) => productSlug(product) === slug);
+
 export const PRODUCTS: Product[] = [
   { id: 1, name: "Aster Q893A LVIZON", size: "60x100", country: "Казахстан", price: 160000, oldPrice: null, image: "/assets/rug-blue.svg", tag: "Новинка", material: "Полипропилен", category: "Ковры" },
   { id: 2, name: "Venetta Q983A CREAM LVIZON", size: "60x100", country: "Казахстан", price: 100000, oldPrice: 160000, image: "/assets/rug-cream.svg", tag: "-20%", material: "Полипропилен", category: "Ковры" },

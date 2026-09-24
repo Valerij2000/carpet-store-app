@@ -3,6 +3,7 @@ import "./globals.css";
 import "@/styles/features.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CartToast from "@/components/CartToast";
 
 export const metadata: Metadata = {
   title: "BAYAN SÚLU — интернет-магазин ковров",
@@ -16,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
-      <body><Header />{children}<Footer /></body>
+      <body><Header />{children}<CartToast /><Footer /></body>
     </html>
   );
 }

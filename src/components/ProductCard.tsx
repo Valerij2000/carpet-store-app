@@ -1,12 +1,11 @@
 "use client";
 import Link from "next/link";
-import { Product, money } from "@/lib/products";
+import { Product, money, productSlug } from "@/lib/products";
 import { addToCart } from "@/lib/store";
 import { useEffect, useState } from "react";
 
 export default function ProductCard({ product }: { product: Product }) {
   const [active, setActive] = useState(false);
-  const [added, setAdded] = useState(false);
   useEffect(() => {
     try {
       setActive(
@@ -29,8 +28,6 @@ export default function ProductCard({ product }: { product: Product }) {
   };
   const handleAddToCart = () => {
     addToCart(product);
-    setAdded(true);
-    window.setTimeout(() => setAdded(false), 1500);
   };
   return (
     <article className="product-card">
@@ -42,10 +39,10 @@ export default function ProductCard({ product }: { product: Product }) {
       >
         {active ? "♥" : "♡"}
       </button>
-      <Link href={`/product?id=${product.id}`} className="product-card__image">
+      <Link href={`/product/${productSlug(product)}`} className="product-card__image">
         <img src={product.image} alt={product.name} />
       </Link>
-      <Link href={`/product?id=${product.id}`} className="product-card__name">
+      <Link href={`/product/${productSlug(product)}`} className="product-card__name">
         {product.name}
       </Link>
       <div className="product-card__meta">Размер: {product.size}</div>
@@ -77,9 +74,7 @@ export default function ProductCard({ product }: { product: Product }) {
           </div>
         </>
       )}
-      <button className={`product-card__add ${added ? "is-added" : ""}`} onClick={handleAddToCart}>
-        {added ? "Добавлено" : "В корзину"}
-      </button>
+      <button className="product-card__add" onClick={handleAddToCart}>В корзину</button>
     </article>
   );
 }

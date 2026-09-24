@@ -38,6 +38,11 @@ export const addToCart = (product: Product, quantity = 1) => {
   if (item) item.quantity += quantity
   else cart.push({ id: product.id, quantity })
   saveCart(cart)
+  window.dispatchEvent(
+    new CustomEvent('bayan-cart-added', {
+      detail: { name: product.name, quantity },
+    }),
+  )
 }
 
 export const readOrders = (): Order[] => {
