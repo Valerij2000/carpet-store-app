@@ -15,8 +15,34 @@ export type Order = {
   status: OrderStatus
 }
 
+export type UserProfile = {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  birthDate: string
+}
+
+export type Address = {
+  id: string
+  street: string
+  city: string
+  region: string
+  postalCode: string
+}
+
+export type PaymentMethod = {
+  id: string
+  type: 'card'
+  last4: string
+  holder: string
+}
+
 export const CART_KEY = 'bayan-cart'
 export const ORDERS_KEY = 'bayan-orders'
+export const PROFILE_KEY = 'bayan-profile'
+export const ADDRESSES_KEY = 'bayan-addresses'
+export const PAYMENTS_KEY = 'bayan-payments'
 
 export const readCart = (): CartItem[] => {
   try {
@@ -71,4 +97,48 @@ export const createOrder = (items: CartItem[], total: number): Order => {
   }
   localStorage.setItem(ORDERS_KEY, JSON.stringify([order, ...readOrders()]))
   return order
+}
+
+const readJson = <T>(key: string, fallback: T): T => {
+  try {
+    const value = JSON.parse(localStorage.getItem(key) || '')
+    return value ?? fallback
+  } catch {
+    return fallback
+  }
+}
+
+export const readProfile = (): UserProfile => readJson(PROFILE_KEY, {
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  birthDate: '',
+})
+
+export const saveProfile = (profile: UserProfile) => {
+  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile))
+  window.dispatchEvent(new Event('bayan-store-update'))
+}
+
+export const readAddresses = (): Address[] => {
+  const addresses = readJson<unknown>(ADDRESSES_KEY, [])
+  return Array.isArray(addresses) ? addresses as Address[] : []
+}
+
+export const saveAddress = (address: Omit<Address, 'id'>) => {
+  const nextAddress = { ...address, id: `address-${Date.now()}` }
+  localStorage.setItem(ADDRESSES_KEY, JSON.stringify([...readAddresses(), nextAddress]))
+  window.dispatchEvent(new Event('bayan-store-update'))
+}
+
+export const readPayments = (): PaymentMethod[] => {
+  const payments = readJson<unknown>(PAYMENTS_KEY, [])
+  return Array.isArray(payments) ? payments as PaymentMethod[] : []
+}
+
+export const savePayment = (payment: Omit<PaymentMethod, 'id'>) => {
+  const nextPayment = { ...payment, id: `payment-${Date.now()}` }
+  localStorage.setItem(PAYMENTS_KEY, JSON.stringify([...readPayments(), nextPayment]))
+  window.dispatchEvent(new Event('bayan-store-update'))
 }

@@ -3,13 +3,21 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import { findProduct, money } from "@/lib/products";
-import { createOrder, readCart, saveCart } from "@/lib/store";
+import { createOrder, readCart, readProfile, saveCart, saveProfile } from "@/lib/store";
 export default function Checkout() {
   const [deliveryMethod, setDeliveryMethod] = useState("delivery");
   const [total, setTotal] = useState(0);
   const [done, setDone] = useState(false);
   const [orderId, setOrderId] = useState("");
+  const [profile, setProfile] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    birthDate: "",
+  });
   useEffect(() => {
+    setProfile(readProfile());
     const cart = readCart();
     setTotal(
       cart.reduce(
@@ -51,6 +59,7 @@ export default function Checkout() {
           className="form-page"
           onSubmit={(e) => {
             e.preventDefault();
+            saveProfile(profile);
             const order = createOrder(readCart(), total);
             saveCart([]);
             setOrderId(order.id);
@@ -59,10 +68,10 @@ export default function Checkout() {
         >
           <h2>Контактные данные</h2>
           <div className="form-grid">
-            <Field label="Имя" />
-            <Field label="Телефон" />
-            <Field label="Email" type="email" />
-            <Field label="Город" value="Макеевка" />
+            <Field label="Имя" value={profile.firstName} onChange={(value) => setProfile({ ...profile, firstName: value })} />
+            <Field label="Телефон" value={profile.phone} onChange={(value) => setProfile({ ...profile, phone: value })} />
+            <Field label="Email" type="email" value={profile.email} onChange={(value) => setProfile({ ...profile, email: value })} />
+            <Field label="Город" value="Макеевка" readOnly />
             <div className="form-field form-field--full">
               <label>Выберите способ получения товара</label>
               <div className="delivery-options">
@@ -92,9 +101,7 @@ export default function Checkout() {
                 </button>
               </div>
             </div>
-            {deliveryMethod === "delivery" && (
-              <Field label="Адрес доставки" full />
-            )}
+            {deliveryMethod === "delivery" && <Field label="Адрес доставки" full />}
             <div className="form-field form-field--full">
               <label>Способ оплаты</label>
               <select>
@@ -123,16 +130,24 @@ function Field({
   full,
   type = "text",
   value,
+  onChange,
+  readOnly,
 }: {
   label: string;
   full?: boolean;
   type?: string;
   value?: string;
+  onChange?: (value: string) => void;
+  readOnly?: boolean;
 }) {
   return (
     <div className={`form-field ${full ? "form-field--full" : ""}`}>
       <label>{label}</label>
-      <input required type={type} defaultValue={value} />
+      {value !== undefined ? (
+        <input required type={type} value={value} readOnly={readOnly} onChange={(event) => onChange?.(event.target.value)} />
+      ) : (
+        <input required type={type} />
+      )}
     </div>
   );
 }

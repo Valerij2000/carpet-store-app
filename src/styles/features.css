@@ -275,6 +275,41 @@
   margin: 0 14px 18px;
 }
 
+.account-form h1 {
+  margin: 0 0 22px;
+  text-transform: uppercase;
+  font-size: 25px;
+}
+
+.account-form > form,
+.account-form > .form-grid {
+  max-width: 760px;
+}
+
+.account-form .btn {
+  margin-top: 20px;
+}
+
+.saved-items {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.saved-item {
+  display: grid;
+  gap: 5px;
+  padding: 13px 15px;
+  border: 1px solid #ededed;
+  border-radius: 7px;
+  background: #f8faf9;
+  font-size: 12px;
+}
+
+.saved-item span {
+  color: #777;
+}
+
 @media (max-width: 800px) {
   .container {
     width: min(100% - 32px, 1040px);
