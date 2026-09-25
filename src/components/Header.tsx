@@ -80,6 +80,14 @@ export default function Header() {
         </form>
         <div className="header-actions">
           <Link
+            href={mapUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="location-button"
+          >
+            <Icon name="pin" />
+          </Link>
+          <Link
             className="icon-button header-account"
             href="/account"
             aria-label="Личный кабинет"

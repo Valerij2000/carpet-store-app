@@ -1345,6 +1345,20 @@ img {
     display: none
   }
 
+  .location-button {
+    position: relative;
+    bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+
+    svg {
+      width: 27px;
+      height: 27px;
+    }
+  }
+
   .mobile-toggle {
     display: inline-flex
   }
