@@ -1432,6 +1432,10 @@ img {
 }
 
 @media(max-width: 560px) {
+  .delivery-button {
+    display: none;
+  }
+
   .container {
     width: calc(100% - 28px)
   }
