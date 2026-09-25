@@ -1446,6 +1446,10 @@ img {
 }
 
 @media(max-width: 560px) {
+  .site-footer {
+    padding: 34px 0 90px
+  }
+
   .site-header {
     position: fixed;
     top: auto;
