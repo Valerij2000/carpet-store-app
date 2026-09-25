@@ -1,37 +1,12 @@
 import Link from "next/link";
+import PremiumHero from "@/components/PremiumHero";
 import ProductSlider from "@/components/ProductSlider";
 import { PRODUCTS } from "@/lib/products";
 
 export default function Home() {
   return (
     <main>
-      <section className="hero">
-        <div className="container hero__inner">
-          <div className="hero__content">
-            <h1 className="hero__title">
-              Новая коллекция
-              <br />
-              ковров Venetta
-            </h1>
-            <Link className="hero__button" href="/catalog">
-              Смотреть все
-            </Link>
-          </div>
-          <div className="hero__visual">
-            <div className="hero__price">16.000 ₽</div>
-            <img
-              className="hero__rug"
-              src="/assets/banner1.png"
-              alt="Ковер Venetta Navy"
-            />
-            <img
-              className="hero__rug"
-              src="/assets/banner2.png"
-              alt="Ковер Venetta Cream"
-            />
-          </div>
-        </div>
-      </section>
+      <PremiumHero />
       <ProductStrip
         title="Новинки"
         link="Все новинки"
