@@ -19,6 +19,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [counts, setCounts] = useState({ cart: 0, favorites: 0 });
   const [activeOrderId, setActiveOrderId] = useState<string | null>(null);
+  const mapUrl = `https://yandex.ru/maps/-/CXQ4vM7t`;
   useEffect(() => {
     const update = () => {
       try {
@@ -54,10 +55,15 @@ export default function Header() {
           <span className="logo__name">Ковры Дорожки</span>
           <span className="logo__sub">ИНТЕРНЕТ-МАГАЗИН КОВРОВ</span>
         </Link>
-        <div className="location">
+        <Link
+          href={mapUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="location"
+        >
           <Icon name="pin" />
           Макеевка
-        </div>
+        </Link>
         <form className="search" onSubmit={(event) => event.preventDefault()}>
           <input
             className="search__input"
