@@ -12,8 +12,9 @@ export default function Contacts() {
             цвет и варианты доставки.
           </p>
           <div className="product-detail__info">
-            <Row n="Телефон" v="+7 775 657 66 76" />
-            <Row n="Email" v="info@kilem.kz" />
+            <Row n="Телефон (осн)" v="+7 949 407 44 80" />
+            <Row n="Телефон (доп)" v="+7 949 407 44 81" />
+            <Row n="Email" v="kovry.makeevka@mail.ru" />
             <Row n="Город" v="Макеевка" />
             <Row n="Доставка" v="По РФ" />
           </div>
