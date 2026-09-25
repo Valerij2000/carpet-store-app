@@ -1446,6 +1446,13 @@ img {
 }
 
 @media(max-width: 560px) {
+  .site-header {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    width: 100%;
+  }
+
   .delivery-button {
     display: none;
   }
