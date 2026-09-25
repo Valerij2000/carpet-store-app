@@ -18,15 +18,15 @@ export default function Home() {
             </Link>
           </div>
           <div className="hero__visual">
-            <div className="hero__price">160.000 ₽</div>
+            <div className="hero__price">16.000 ₽</div>
             <img
               className="hero__rug"
-              src="/assets/rug-navy.svg"
+              src="/assets/banner1.png"
               alt="Ковер Venetta Navy"
             />
             <img
               className="hero__rug"
-              src="/assets/rug-venetta.svg"
+              src="/assets/banner2.png"
               alt="Ковер Venetta Cream"
             />
           </div>
