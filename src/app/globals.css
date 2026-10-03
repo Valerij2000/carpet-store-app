@@ -1016,7 +1016,7 @@ img {
 }
 
 .btn--primary {
-  background: #8c503ea1;
+  background: #CB4A4A;
   color: #fff
 }
 
@@ -1333,6 +1333,28 @@ img {
 }
 
 @media(max-width: 900px) {
+  .section-heading--catalog {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 8px;
+    padding-right: 76px
+  }
+
+  .section-heading--catalog .section-heading__title {
+    font-size: 24px;
+    line-height: 1.1
+  }
+
+  .section-heading--catalog .section-heading__link {
+    width: fit-content
+  }
+
+  .section-heading--catalog+.product-slider .slider-controls {
+    top: -74px;
+    right: 0
+  }
+
   .container {
     width: min(100% - 36px, 1040px)
   }

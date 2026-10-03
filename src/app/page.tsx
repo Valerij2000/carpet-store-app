@@ -27,7 +27,7 @@ function ProductStrip({
   return (
     <section className="section">
       <div className="container">
-        <div className="section-heading">
+        <div className="section-heading section-heading--catalog">
           <h2 className="section-heading__title">{title}</h2>
           <Link className="section-heading__link" href="/catalog">
             {link}

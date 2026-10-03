@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { KeyboardEvent, PointerEvent, useEffect, useRef, useState } from 'react';
+import { KeyboardEvent, PointerEvent, useRef, useState } from 'react';
 import { formatSeasonPrice, SeasonHit, seasonHits } from '@/data/seasonHits';
 import styles from './PremiumHero.module.css';
 
@@ -16,108 +16,178 @@ export default function PremiumHero({
   status = 'ready',
 }: PremiumHeroProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const startX = useRef<number | null>(null);
-  const product = products[activeIndex];
+  const didSwipe = useRef(false);
   const count = products.length;
+  const product = products[activeIndex];
 
-  useEffect(() => {
-    setActiveIndex((index) => Math.min(index, Math.max(count - 1, 0)));
-  }, [count]);
-
-  const handleSelect = (index: number) => setActiveIndex(index);
-  const handlePrevious = () => setActiveIndex((index) => (index - 1 + count) % count);
+  const handlePrevious = () =>
+    setActiveIndex((index) => (index - 1 + count) % count);
   const handleNext = () => setActiveIndex((index) => (index + 1) % count);
-
-  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType === 'touch') return;
-    const bounds = event.currentTarget.getBoundingClientRect();
-    setTilt({
-      x: ((event.clientY - bounds.top) / bounds.height - 0.5) * -4,
-      y: ((event.clientX - bounds.left) / bounds.width - 0.5) * 5,
-    });
-  };
-
-  const handlePointerLeave = () => setTilt({ x: 0, y: 0 });
-  const handleTouchStart = (event: PointerEvent<HTMLDivElement>) => {
-    startX.current = event.clientX;
-  };
-  const handleTouchEnd = (event: PointerEvent<HTMLDivElement>) => {
-    if (startX.current === null) return;
-    const distance = event.clientX - startX.current;
-    if (Math.abs(distance) > 45) (distance > 0 ? handlePrevious : handleNext)();
-    startX.current = null;
-  };
-  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'ArrowLeft') handlePrevious();
     if (event.key === 'ArrowRight') handleNext();
   };
+  const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    didSwipe.current = false;
+    startX.current = event.pointerType === 'touch' ? event.clientX : null;
+  };
+  const handlePointerUp = (event: PointerEvent<HTMLDivElement>) => {
+    if (startX.current === null) return;
+    const distance = event.clientX - startX.current;
+    if (Math.abs(distance) > 45) {
+      didSwipe.current = true;
+      if (distance > 0) handlePrevious();
+      else handleNext();
+    }
+    startX.current = null;
+  };
 
-  if (status === 'loading') {
-    return <section className={styles.hero} aria-label="Хиты сезона"><div className={styles.state}>Загрузка коллекции…</div></section>;
+  if (status !== 'ready' || !product) {
+    const message =
+      status === 'loading'
+        ? 'Загрузка коллекции…'
+        : status === 'error'
+          ? 'Не удалось загрузить коллекцию'
+          : 'Нет товаров сезона';
+
+    return (
+      <section className={styles.hero} aria-label="Коллекция сезона">
+        <div className={styles.state}>{message}</div>
+      </section>
+    );
   }
-  if (status === 'error') {
-    return <section className={styles.hero} aria-label="Хиты сезона"><div className={styles.state}>Не удалось загрузить коллекцию</div></section>;
-  }
-  if (status === 'empty' || !product) {
-    return <section className={styles.hero} aria-label="Хиты сезона"><div className={styles.state}>Нет товаров сезона</div></section>;
-  }
+
+  const nextProduct = products[(activeIndex + 1) % count];
 
   return (
     <section className={styles.hero} aria-labelledby="season-hero-title">
-      <div className={styles.glow} aria-hidden="true" />
       <div className={styles.inner}>
-        <div className={styles.content}>
-          <p className={styles.eyebrow}><span /> Хит сезона <b>{product.season}</b></p>
-          <h1 className={styles.title} id="season-hero-title">ТОП-10 ковров<br /><em>и дорожек</em> сезона</h1>
-          <p className={styles.subtitle}>Текстиль, который меняет пространство</p>
-          <p className={styles.description}>Собрали вещи, в которые влюбляются с первого взгляда. Листайте подборку и найдите свой идеальный фактурный акцент.</p>
-          <div className={styles.actions}>
-            <Link className={styles.primaryButton} href="/catalog">Смотреть коллекцию <span>↗</span></Link>
-            <Link className={styles.secondaryButton} href="/catalog">Все ковры</Link>
-          </div>
-          <p className={styles.meta}><span>{count} моделей</span><i /> Новая коллекция <i /> В наличии</p>
-          <div className={styles.services} aria-label="Услуги">
-            <Link href="/contacts"><strong>Оверлок</strong><span>идеальный край за 1 день&nbsp; →</span></Link>
-            <Link href="/contacts"><strong>Реставрация</strong><span>вернём ковру характер&nbsp; →</span></Link>
-          </div>
+        <div className={styles.copy}>
+          <p className={styles.eyebrow}>ТОП-10 ковров и дорожек сезона</p>
+          <h1 className={styles.title} id="season-hero-title">
+            Новая коллекция ковров Venetta
+          </h1>
         </div>
 
         <div
           className={styles.showcase}
           tabIndex={0}
           role="region"
-          aria-label="Карусель хитов сезона"
+          aria-label="Слайдер новинок сезона"
           onKeyDown={handleKeyDown}
-          onPointerMove={handlePointerMove}
-          onPointerLeave={handlePointerLeave}
-          onPointerDown={handleTouchStart}
-          onPointerUp={handleTouchEnd}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
         >
-          <div className={styles.showcaseTop}><span>SEASON EDIT</span><span>01 — {String(count).padStart(2, '0')}</span></div>
-          <div className={styles.object} style={{ transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` }}>
-            <div className={`${styles.floatLabel} ${styles.rank}`}>#{String(product.rank).padStart(2, '0')}<small>ТОП ПРОДАЖ</small></div>
-            <div className={`${styles.floatLabel} ${styles.quality}`}>ТУРЕЦКОЕ<br />КАЧЕСТВО</div>
-            <div className={styles.rugFrame}>
-              <Image key={product.id} className={styles.rug} src={product.image} alt={`${product.title} — ${product.category}, ${product.size}`} width={580} height={420} priority={activeIndex === 0} />
-              <span className={styles.reflection} />
-            </div>
-            <div className={`${styles.floatLabel} ${styles.size}`}>{product.size}</div>
-          </div>
-          <div className={styles.productInfo}>
-            <div><p>{product.category} · {product.material}</p><h2>{product.title}</h2><span>{product.available ? 'В наличии' : 'Под заказ'}</span></div>
-            <div className={styles.price}><strong>{formatSeasonPrice(product.price)}</strong><del>{formatSeasonPrice(product.oldPrice)}</del></div>
-            <Link className={styles.detailButton} href={`/product/${product.slug}`} aria-label={`Подробнее о ковре ${product.title}`}>Подробнее <span>→</span></Link>
-          </div>
-          <div className={styles.controls}>
-            <button type="button" onClick={handlePrevious} aria-label="Предыдущий товар">←</button>
-            <div className={styles.progress} aria-hidden="true"><span style={{ width: `${((activeIndex + 1) / count) * 100}%` }} /></div>
-            <button type="button" onClick={handleNext} aria-label="Следующий товар">→</button>
-            <span className={styles.counter}>{String(activeIndex + 1).padStart(2, '0')} <i>/</i> {String(count).padStart(2, '0')}</span>
+          <div className={styles.rugs}>
+            <Link
+              className={`${styles.rugFrame} ${styles.activeRug}`}
+              href={`/product/${product.slug}`}
+              aria-label={`Подробнее: ${product.title}`}
+              onClick={(event) => {
+                if (didSwipe.current && event.detail > 0) {
+                  event.preventDefault();
+                  didSwipe.current = false;
+                }
+              }}
+            >
+              <Image
+                key={product.id}
+                className={styles.rug}
+                src={product.image}
+                alt={`${product.title} — ${product.category}, ${product.size}`}
+                width={580}
+                height={700}
+                priority={activeIndex === 0}
+              />
+              <span className={styles.price}>
+                {formatSeasonPrice(product.price)}
+              </span>
+            </Link>
+            <Link
+              className={`${styles.rugFrame} ${styles.nextRug}`}
+              href={`/product/${nextProduct.slug}`}
+              aria-label={`Следующий товар: ${nextProduct.title}`}
+              tabIndex={-1}
+            >
+              <Image
+                key={nextProduct.id}
+                className={styles.rug}
+                src={nextProduct.image}
+                alt=""
+                width={580}
+                height={700}
+              />
+            </Link>
           </div>
           <div className={styles.dots} role="tablist" aria-label="Выбор товара">
-            {products.map((item, index) => <button key={item.id} type="button" role="tab" aria-selected={index === activeIndex} aria-label={`Товар ${index + 1}: ${item.title}`} className={index === activeIndex ? styles.dotActive : ''} onClick={() => handleSelect(index)} />)}
+            {products.map((item, index) => (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                aria-selected={index === activeIndex}
+                aria-label={`Товар ${index + 1}: ${item.title}`}
+                className={index === activeIndex ? styles.dotActive : ''}
+                onClick={() => setActiveIndex(index)}
+              />
+            ))}
           </div>
+          <div className={styles.productInfo} aria-live="polite">
+            <span>{product.category} · {product.material}</span>
+            <strong>{product.title}</strong>
+            <span>{product.size}</span>
+          </div>
+        </div>
+
+        <div className={styles.actions}>
+          <Link className={styles.primaryButton} href="/catalog">
+            Смотреть каталог
+          </Link>
+          <div className={styles.controls}>
+            <button
+              type="button"
+              onClick={handlePrevious}
+              aria-label="Предыдущий товар"
+            >
+              ‹
+            </button>
+            <span>
+              {String(activeIndex + 1).padStart(2, '0')} /{' '}
+              {String(count).padStart(2, '0')}
+            </span>
+            <button
+              type="button"
+              onClick={handleNext}
+              aria-label="Следующий товар"
+            >
+              ›
+            </button>
+          </div>
+        </div>
+
+        <div className={styles.supporting}>
+          <p className={styles.subtitle}>
+            Текстиль, который меняет пространство
+          </p>
+          <p className={styles.description}>
+            Собрали вещи, в которые влюбляются с первого взгляда. Листайте
+            подборку и найдите свой идеальный фактурный акцент.
+          </p>
+          <p className={styles.meta}>
+            {count} моделей <span /> Новая коллекция <span /> В наличии
+          </p>
+        </div>
+
+        <div className={styles.services} aria-label="Услуги">
+          <Link href="/contacts">
+            <strong>Оверлок</strong>
+            <span>Идеальный край за 1 день →</span>
+          </Link>
+          <Link href="/contacts">
+            <strong>Реставрация</strong>
+            <span>Вернём ковру характер →</span>
+          </Link>
         </div>
       </div>
     </section>
