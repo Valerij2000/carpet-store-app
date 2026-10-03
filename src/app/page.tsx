@@ -8,14 +8,9 @@ export default function Home() {
     <main>
       <PremiumHero />
       <ProductStrip
-        title="Новинки"
-        link="Все новинки"
-        products={PRODUCTS.filter((p) => !p.oldPrice)}
-      />
-      <ProductStrip
-        title="Скидки"
-        link="Все скидки"
-        products={PRODUCTS.filter((p) => p.oldPrice)}
+        title="Товары из каталога"
+        link="Все товары"
+        products={PRODUCTS}
       />
     </main>
   );

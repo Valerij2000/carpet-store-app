@@ -8,10 +8,17 @@ export default function Catalog() {
   const [categories, setCategories] = useState<string[]>([]);
   const [materials, setMaterials] = useState<string[]>([]);
   const [sort, setSort] = useState("");
+  const categoryOptions = [...new Set(PRODUCTS.flatMap((product) => product.category ?? []))];
+  const materialOptions = [...new Set(PRODUCTS.flatMap((product) => product.material ?? []))];
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     setQuery(params.get("search") || "");
-    setCategories(params.get("category") ? [params.get("category")!] : []);
+    const category = params.get("category");
+    setCategories(
+      category && PRODUCTS.some((product) => product.category === category)
+        ? [category]
+        : [],
+    );
   }, []);
   const toggle = (
     value: string,
@@ -27,11 +34,13 @@ export default function Catalog() {
     const result = PRODUCTS.filter(
       (product) =>
         (!query ||
-          `${product.name} ${product.category} ${product.material}`
+          `${product.name} ${product.description} ${product.category ?? ""} ${product.material ?? ""} ${product.country ?? ""}`
             .toLowerCase()
             .includes(query.toLowerCase())) &&
-        (!categories.length || categories.includes(product.category)) &&
-        (!materials.length || materials.includes(product.material)),
+        (!categories.length ||
+          (product.category && categories.includes(product.category))) &&
+        (!materials.length ||
+          (product.material && materials.includes(product.material))),
     );
     return [...result].sort((a, b) =>
       sort === "cheap"
@@ -48,18 +57,22 @@ export default function Catalog() {
       <PageHero title="Каталог ковров" crumbs="Главная / Каталог" />
       <div className="container catalog-layout">
         <aside className="filters">
-          <Filter
-            title="Категория"
-            values={["Ковры", "Коврики", "Особенные ковры"]}
-            selected={categories}
-            onChange={(v) => toggle(v, categories, setCategories)}
-          />
-          <Filter
-            title="Материал"
-            values={["Полипропилен", "Полиэстер", "Вискоза", "Шерсть"]}
-            selected={materials}
-            onChange={(v) => toggle(v, materials, setMaterials)}
-          />
+          {categoryOptions.length > 0 && (
+            <Filter
+              title="Категория"
+              values={categoryOptions}
+              selected={categories}
+              onChange={(v) => toggle(v, categories, setCategories)}
+            />
+          )}
+          {materialOptions.length > 0 && (
+            <Filter
+              title="Материал"
+              values={materialOptions}
+              selected={materials}
+              onChange={(v) => toggle(v, materials, setMaterials)}
+            />
+          )}
         </aside>
         <section>
           <div className="catalog-toolbar">

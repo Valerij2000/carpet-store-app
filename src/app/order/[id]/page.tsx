@@ -24,7 +24,7 @@ export default function OrderPage({ params }: { params: { id: string } }) {
       <div className="container order-page">
         <div className="order-page__header"><div><h2>Статус заказа: {order.status}</h2><p>Оформлен {new Date(order.createdAt).toLocaleDateString('ru-RU')}</p></div><strong>{money(order.total)}</strong></div>
         <OrderProgress status={order.status} />
-        <section className="order-items"><h2>Состав заказа</h2>{order.items.map((item) => { const product = findProduct(item.id); return product ? <div className="order-item" key={item.id}><span>{product.name} × {item.quantity}</span><strong>{money(product.price * item.quantity)}</strong></div> : null })}</section>
+        <section className="order-items"><h2>Состав заказа</h2>{order.items.map((item) => { const product = findProduct(item.id); return product ? <div className="order-item" key={item.id}><span>{product.name} × {item.quantity}</span><strong>{money(product.price * item.quantity, product.currency)}</strong></div> : null })}</section>
       </div>
     </main>
   )

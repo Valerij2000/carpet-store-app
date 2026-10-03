@@ -7,13 +7,13 @@ import ProductCard from "@/components/ProductCard";
 import { PRODUCTS } from "@/lib/products";
 
 export default function Favorites() {
-  const [ids, setIds] = useState<number[]>([]);
+  const [ids, setIds] = useState<string[]>([]);
 
   useEffect(() => {
     const updateFavorites = () => {
       try {
         const value = JSON.parse(localStorage.getItem("bayan-favorites") || "[]");
-        setIds(Array.isArray(value) ? value : []);
+        setIds(Array.isArray(value) ? value.map(String) : []);
       } catch {
         setIds([]);
       }

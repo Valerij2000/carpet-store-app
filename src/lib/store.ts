@@ -1,7 +1,7 @@
-import { Product } from '@/lib/products'
+import { findProduct, Product } from '@/lib/products'
 
 export type CartItem = {
-  id: number
+  id: string
   quantity: number
 }
 
@@ -46,8 +46,25 @@ export const PAYMENTS_KEY = 'bayan-payments'
 
 export const readCart = (): CartItem[] => {
   try {
-    const value = JSON.parse(localStorage.getItem(CART_KEY) || '[]')
-    return Array.isArray(value) ? value : []
+    const value: unknown = JSON.parse(localStorage.getItem(CART_KEY) || '[]')
+    if (!Array.isArray(value)) return []
+
+    return value
+      .flatMap((item: unknown) => {
+        if (!item || typeof item !== 'object') return []
+        const entry = item as { id?: unknown; quantity?: unknown }
+        const id =
+          typeof entry.id === 'string' || typeof entry.id === 'number'
+            ? String(entry.id)
+            : undefined
+        const quantity =
+          typeof entry.quantity === 'number' && Number.isFinite(entry.quantity)
+            ? entry.quantity
+            : undefined
+
+        return id && quantity && quantity > 0 ? [{ id, quantity }] : []
+      })
+      .filter((item) => findProduct(item.id))
   } catch {
     return []
   }

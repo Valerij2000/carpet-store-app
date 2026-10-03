@@ -2,18 +2,14 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import PageHero from "@/components/PageHero";
-import { findProduct, money, Product, productSlug } from "@/lib/products";
-type Item = { id: number; quantity: number };
+import { findProduct, money, productSlug } from "@/lib/products";
+import { CartItem, readCart, saveCart } from "@/lib/store";
 export default function Cart() {
-  const [cart, setCart] = useState<Item[]>([]);
-  useEffect(
-    () => setCart(JSON.parse(localStorage.getItem("bayan-cart") || "[]")),
-    [],
-  );
-  const update = (next: Item[]) => {
+  const [cart, setCart] = useState<CartItem[]>([]);
+  useEffect(() => setCart(readCart()), []);
+  const update = (next: CartItem[]) => {
     setCart(next);
-    localStorage.setItem("bayan-cart", JSON.stringify(next));
-    window.dispatchEvent(new Event("bayan-store-update"));
+    saveCart(next);
   };
   const total = cart.reduce(
     (sum, item) => sum + (findProduct(item.id)?.price || 0) * item.quantity,
@@ -27,7 +23,11 @@ export default function Cart() {
           <section>
             <div className="cart-list">
               {cart.map((item) => {
-                const product = findProduct(item.id) as Product;
+                const product = findProduct(item.id);
+                if (!product) return null;
+                const meta = [product.size, product.material, product.country]
+                  .filter(Boolean)
+                  .join(" · ");
                 return (
                   <article className="cart-item" key={item.id}>
                     <Link
@@ -43,9 +43,7 @@ export default function Cart() {
                       >
                         {product.name}
                       </Link>
-                      <div className="cart-item__meta">
-                        {product.size} · {product.material}
-                      </div>
+                      {meta && <div className="cart-item__meta">{meta}</div>}
                       <div className="quantity" style={{ marginTop: 12 }}>
                         <button
                           onClick={() =>
@@ -83,7 +81,7 @@ export default function Cart() {
                       </div>
                     </div>
                     <div className="cart-item__price">
-                      {money(product.price * item.quantity)}
+                      {money(product.price * item.quantity, product.currency)}
                     </div>
                     <button
                       className="cart-item__remove"

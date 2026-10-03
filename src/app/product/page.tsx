@@ -9,7 +9,7 @@ export default function ProductPage() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const product = findProduct(productId) || PRODUCTS[0];
-  const images = [product.image, "/assets/rug-cream.svg", "/assets/rug-navy.svg"];
+  const images = [product.image];
 
   useEffect(() => {
     setProductId(new URLSearchParams(window.location.search).get("id"));
@@ -17,10 +17,13 @@ export default function ProductPage() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const favorites: number[] = JSON.parse(
+      const favorites: unknown = JSON.parse(
         localStorage.getItem("bayan-favorites") || "[]",
       );
-      setIsFavorite(favorites.includes(product.id));
+      setIsFavorite(
+        Array.isArray(favorites) &&
+          favorites.some((id) => String(id) === product.id),
+      );
     }
   }, [product.id]);
 
@@ -28,9 +31,12 @@ export default function ProductPage() {
     addToCart(product, quantity);
   };
   const favorite = () => {
-    const favorites: number[] = JSON.parse(
+    const storedFavorites: unknown = JSON.parse(
       localStorage.getItem("bayan-favorites") || "[]",
     );
+    const favorites = Array.isArray(storedFavorites)
+      ? storedFavorites.map(String)
+      : [];
     const next = favorites.includes(product.id)
       ? favorites.filter((id) => id !== product.id)
       : [...favorites, product.id];
@@ -66,12 +72,20 @@ export default function ProductPage() {
           <div className="product-detail__rating">
             ★ ★ ★ ★ ★ &nbsp; <span style={{ color: "#aaa" }}>0 отзывов</span>
           </div>
-          <div className="product-detail__price">{money(product.price)}</div>
+          <div className="product-detail__price">
+            {money(product.price, product.currency)}
+          </div>
           <div className="product-detail__info">
-            <Row name="Размер" value={product.size} />
-            <Row name="Производитель" value={product.country} />
-            <Row name="Материал" value={product.material} />
-            <Row name="Доставка" value="по Алматы и Казахстану" />
+            {product.size && <Row name="Размер" value={product.size} />}
+            {product.manufacturer && (
+              <Row name="Производитель" value={product.manufacturer} />
+            )}
+            {product.country && <Row name="Страна" value={product.country} />}
+            {product.material && <Row name="Материал" value={product.material} />}
+            <Row
+              name="Наличие"
+              value={product.inStock === false ? "Нет в наличии" : "В наличии"}
+            />
           </div>
           <div className="buy-row">
             <div className="quantity">
@@ -81,7 +95,11 @@ export default function ProductPage() {
               <input value={quantity} readOnly aria-label="Количество" />
               <button onClick={() => setQuantity(quantity + 1)}>+</button>
             </div>
-            <button className="btn btn--primary" onClick={add}>
+            <button
+              className="btn btn--primary"
+              onClick={add}
+              disabled={product.inStock === false}
+            >
               Добавить в корзину
             </button>
             <button
@@ -93,10 +111,18 @@ export default function ProductPage() {
               <span className={isFavorite ? "favorite-heart is-active" : "favorite-heart"}>♥</span>
             </button>
           </div>
-          <p style={{ color: "#888", lineHeight: 1.7, marginTop: 25 }}>
-            Классический орнамент, спокойная палитра и универсальный размер.
-            Подходит для гостиной, спальни и небольших зон отдыха.
-          </p>
+          {product.description && (
+            <p
+              style={{
+                color: "#888",
+                lineHeight: 1.7,
+                marginTop: 25,
+                whiteSpace: "pre-line",
+              }}
+            >
+              {product.description}
+            </p>
+          )}
         </div>
       </div>
     </main>
