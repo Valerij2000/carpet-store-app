@@ -1237,6 +1237,23 @@ img {
   resize: vertical
 }
 
+.contact-form__status {
+  margin: 12px 0 0;
+  line-height: 1.5
+}
+
+.contact-form__status--success {
+  color: #477662
+}
+
+.contact-form__status--error {
+  color: #c33
+}
+
+.contact-form__status--sending {
+  color: #777
+}
+
 .checkout {
   display: grid;
   grid-template-columns: 1fr 310px;
