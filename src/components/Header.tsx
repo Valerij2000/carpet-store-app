@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Icon } from "./icons";
 import { readOrders } from "@/lib/store";
+import SocialLinks from "./SocialLinks";
+import { phones } from "@/data/contacts";
 
 const nav = [
   ["Ковры", "/catalog"],
@@ -118,12 +120,15 @@ export default function Header() {
           </Link>
         </div>
         <button
-          className="icon-button mobile-toggle"
-          onClick={() => setOpen(!open)}
+          className={`icon-button mobile-toggle ${open ? "is-open" : ""}`}
+          type="button"
+          onClick={() => setOpen((current) => !current)}
           aria-expanded={open}
-          aria-label="Открыть меню"
+          aria-controls="mobile-navigation"
+          aria-label={open ? "Закрыть меню" : "Открыть меню"}
+          title={open ? "Закрыть меню" : "Открыть меню"}
         >
-          ☰
+          <span aria-hidden="true">{open ? "×" : "☰"}</span>
         </button>
       </div>
       <nav className="container main-nav" aria-label="Главное меню">
@@ -134,6 +139,7 @@ export default function Header() {
         ))}
       </nav>
       <nav
+        id="mobile-navigation"
         className={`container mobile-nav ${open ? "is-open" : ""}`}
         aria-label="Мобильное меню"
       >
@@ -147,6 +153,15 @@ export default function Header() {
             {label}
           </Link>
         ))}
+        <div className="mobile-menu-contact">
+          <span className="mobile-menu-contact__title">Позвоните нам</span>
+          {phones.map(({ label, number, href }) => (
+            <a className="mobile-menu-contact__phone" href={href} key={label}>
+              {number}
+            </a>
+          ))}
+          <SocialLinks />
+        </div>
       </nav>
     </header>
   );

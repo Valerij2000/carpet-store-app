@@ -1,5 +1,7 @@
 "use client";
 import PageHero from "@/components/PageHero";
+import SocialLinks from "@/components/SocialLinks";
+import { phones } from "@/data/contacts";
 export default function Contacts() {
   return (
     <main>
@@ -12,12 +14,15 @@ export default function Contacts() {
             цвет и варианты доставки.
           </p>
           <div className="product-detail__info">
-            <Row n="Телефон (осн)" v="+7 949 407 44 80" />
-            <Row n="Телефон (доп)" v="+7 949 407 44 81" />
+            {phones.map(({ label, number, href }) => (
+              <Row key={label} n={label} v={number} href={href} />
+            ))}
             <Row n="Email" v="kovry.makeevka@mail.ru" />
             <Row n="Город" v="Макеевка" />
             <Row n="Доставка" v="По РФ" />
           </div>
+          <h3>Мы в социальных сетях</h3>
+          <SocialLinks />
         </div>
         <form
           className="form-grid"
@@ -37,11 +42,11 @@ export default function Contacts() {
     </main>
   );
 }
-function Row({ n, v }: { n: string; v: string }) {
+function Row({ n, v, href }: { n: string; v: string; href?: string }) {
   return (
     <div className="product-detail__row">
       <span>{n}</span>
-      <span>{v}</span>
+      {href ? <a href={href}>{v}</a> : <span>{v}</span>}
     </div>
   );
 }

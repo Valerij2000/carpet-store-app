@@ -183,6 +183,17 @@ img {
   display: none
 }
 
+.mobile-toggle span {
+  display: block;
+  min-width: 24px;
+  font-size: 25px;
+  line-height: 1
+}
+
+.mobile-toggle.is-open span {
+  font-size: 31px
+}
+
 .hero {
   background: #6d9988;
   color: #fff;
@@ -512,6 +523,55 @@ img {
   display: flex !important;
   gap: 12px;
   margin-top: 10px !important
+}
+
+.social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px
+}
+
+.social-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid #d7e3dd;
+  border-radius: 20px;
+  color: #477662;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1
+}
+
+.social-links a:hover {
+  border-color: #6d9988;
+  background: #eef7f2
+}
+
+.mobile-menu-contact {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 14px;
+  border-top: 1px solid #ededed
+}
+
+.mobile-menu-contact__title {
+  color: #777;
+  font-size: 12px;
+  font-weight: 700
+}
+
+.mobile-menu-contact__phone {
+  width: fit-content;
+  font-size: 14px;
+  font-weight: 600
+}
+
+.mobile-menu-contact .social-links {
+  margin-top: 2px
 }
 
 .subscribe {
@@ -1405,7 +1465,9 @@ img {
   }
 
   .mobile-nav.is-open {
-    display: flex
+    display: flex;
+    max-height: min(70vh, 560px);
+    overflow-y: auto
   }
 
   .mobile-nav .main-nav__link {

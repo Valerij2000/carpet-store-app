@@ -1,5 +1,7 @@
 "use client";
 import Link from "next/link";
+import SocialLinks from "./SocialLinks";
+import { phones } from "@/data/contacts";
 export default function Footer() {
   return (
     <footer className="site-footer">
@@ -28,14 +30,13 @@ export default function Footer() {
         </div>
         <div className="footer-col">
           <div className="footer-col__title">Помощь и контакты</div>
-          <p>☎ &nbsp; +7 949 407 44 80</p>
-          <p>☎ &nbsp; +7 949 407 44 81</p>
+          {phones.map(({ label, number, href }) => (
+            <a href={href} key={label}>
+              ☎ &nbsp; {number}
+            </a>
+          ))}
           <p>✉ &nbsp; kovry.makeevka@mail.ru</p>
-          <p className="footer-social">
-            <span>◉</span>
-            <span>◎</span>
-            <span>●</span>
-          </p>
+          <SocialLinks />
         </div>
         <div className="footer-col">
           <div className="footer-col__title">Рассылка</div>
