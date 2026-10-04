@@ -1,36 +1,43 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { KeyboardEvent, PointerEvent, useRef, useState } from 'react';
-import { formatSeasonPrice, SeasonHit, seasonHits } from '@/data/seasonHits';
-import styles from './PremiumHero.module.css';
+import Image from "next/image";
+import Link from "next/link";
+import { KeyboardEvent, PointerEvent, useRef, useState } from "react";
+import { HERO_PRODUCTS } from "@/data/heroProducts";
+import { money, Product, productSlug } from "@/lib/products";
+import styles from "./PremiumHero.module.css";
 
 type PremiumHeroProps = {
-  products?: SeasonHit[];
-  status?: 'ready' | 'loading' | 'empty' | 'error';
+  products?: Product[];
 };
 
+type HeroSlide = { type: "service" } | { type: "product"; product: Product };
+
+const OVERLOCK_PRICE = "200 ₽ за пог. м";
+
 export default function PremiumHero({
-  products = seasonHits,
-  status = 'ready',
+  products = HERO_PRODUCTS,
 }: PremiumHeroProps) {
+  const slides: HeroSlide[] = [
+    { type: "service" },
+    ...products.map((product) => ({ type: "product" as const, product })),
+  ];
   const [activeIndex, setActiveIndex] = useState(0);
   const startX = useRef<number | null>(null);
   const didSwipe = useRef(false);
-  const count = products.length;
-  const product = products[activeIndex];
+  const count = slides.length;
+  const activeSlide = slides[activeIndex];
 
   const handlePrevious = () =>
     setActiveIndex((index) => (index - 1 + count) % count);
   const handleNext = () => setActiveIndex((index) => (index + 1) % count);
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'ArrowLeft') handlePrevious();
-    if (event.key === 'ArrowRight') handleNext();
+    if (event.key === "ArrowLeft") handlePrevious();
+    if (event.key === "ArrowRight") handleNext();
   };
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
     didSwipe.current = false;
-    startX.current = event.pointerType === 'touch' ? event.clientX : null;
+    startX.current = event.pointerType === "touch" ? event.clientX : null;
   };
   const handlePointerUp = (event: PointerEvent<HTMLDivElement>) => {
     if (startX.current === null) return;
@@ -43,30 +50,37 @@ export default function PremiumHero({
     startX.current = null;
   };
 
-  if (status !== 'ready' || !product) {
-    const message =
-      status === 'loading'
-        ? 'Загрузка коллекции…'
-        : status === 'error'
-          ? 'Не удалось загрузить коллекцию'
-          : 'Нет товаров сезона';
+  const getSlideProduct = (slide: HeroSlide) =>
+    slide.type === "product" ? slide.product : null;
 
-    return (
-      <section className={styles.hero} aria-label="Коллекция сезона">
-        <div className={styles.state}>{message}</div>
-      </section>
-    );
-  }
-
-  const nextProduct = products[(activeIndex + 1) % count];
+  const nextProduct = getSlideProduct(slides[(activeIndex + 1) % count]);
+  const currentProduct = getSlideProduct(activeSlide);
+  const overlokInfoHero = (
+    <div>
+      <ul>
+        <li>Обрезка ковров и дорожек под нужные размеры;</li>
+        <li>Обработка ковровых изделий;</li>
+        <li>Реставрация старых ковровых изделий.</li>
+      </ul>
+      <b>
+        <sup>*</sup>Качество гарантируется.
+      </b>
+    </div>
+  );
 
   return (
     <section className={styles.hero} aria-labelledby="season-hero-title">
       <div className={styles.inner}>
         <div className={styles.copy}>
-          <p className={styles.eyebrow}>ТОП-10 ковров и дорожек сезона</p>
+          <p className={styles.eyebrow}>
+            {activeSlide.type === "service"
+              ? "Услуги мастерской"
+              : 'Выбор "Ковры Дорожки Ковролин"'}
+          </p>
           <h1 className={styles.title} id="season-hero-title">
-            Новая коллекция ковров Venetta
+            {activeSlide.type === "service"
+              ? "Оверлок ковров"
+              : "Топ-10 ковров и дорожек"}
           </h1>
         </div>
 
@@ -74,120 +88,136 @@ export default function PremiumHero({
           className={styles.showcase}
           tabIndex={0}
           role="region"
-          aria-label="Слайдер новинок сезона"
+          aria-label="Слайдер услуг и товаров"
           onKeyDown={handleKeyDown}
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
         >
           <div className={styles.rugs}>
-            <Link
-              className={`${styles.rugFrame} ${styles.activeRug}`}
-              href={`/product/${product.slug}`}
-              aria-label={`Подробнее: ${product.title}`}
-              onClick={(event) => {
-                if (didSwipe.current && event.detail > 0) {
-                  event.preventDefault();
-                  didSwipe.current = false;
-                }
-              }}
-            >
-              <Image
-                key={product.id}
-                className={styles.rug}
-                src={product.image}
-                alt={`${product.title} — ${product.category}, ${product.size}`}
-                width={580}
-                height={700}
-                priority={activeIndex === 0}
-              />
+            <div className={`${styles.rugFrame} ${styles.activeRug}`}>
+              {activeSlide.type === "service" ? (
+                <Image
+                  className={styles.rug}
+                  src="/assets/overlock-service.svg"
+                  alt="Аккуратная обработка края ковра оверлоком"
+                  fill
+                  priority
+                  sizes="(max-width: 640px) 90vw, (max-width: 900px) 50vw, 55vw"
+                />
+              ) : (
+                <Link
+                  className={styles.slideLink}
+                  href={`/product/${productSlug(activeSlide.product)}`}
+                  aria-label={`Подробнее: ${activeSlide.product.name}`}
+                  onClick={(event) => {
+                    if (didSwipe.current && event.detail > 0) {
+                      event.preventDefault();
+                      didSwipe.current = false;
+                    }
+                  }}
+                >
+                  <Image
+                    key={activeSlide.product.id}
+                    className={styles.rug}
+                    src={activeSlide.product.image}
+                    alt={activeSlide.product.name}
+                    fill
+                    priority={activeIndex === 0}
+                    sizes="(max-width: 640px) 90vw, (max-width: 900px) 50vw, 55vw"
+                  />
+                </Link>
+              )}
               <span className={styles.price}>
-                {formatSeasonPrice(product.price)}
+                {activeSlide.type === "service"
+                  ? OVERLOCK_PRICE
+                  : money(
+                      activeSlide.product.price,
+                      activeSlide.product.currency,
+                    )}
               </span>
-            </Link>
-            <Link
-              className={`${styles.rugFrame} ${styles.nextRug}`}
-              href={`/product/${nextProduct.slug}`}
-              aria-label={`Следующий товар: ${nextProduct.title}`}
-              tabIndex={-1}
-            >
-              <Image
-                key={nextProduct.id}
-                className={styles.rug}
-                src={nextProduct.image}
-                alt=""
-                width={580}
-                height={700}
-              />
-            </Link>
+            </div>
+            {nextProduct && (
+              <Link
+                className={`${styles.rugFrame} ${styles.nextRug}`}
+                href={`/product/${productSlug(nextProduct)}`}
+                aria-label={`Следующий товар: ${nextProduct.name}`}
+                tabIndex={-1}
+              >
+                <Image
+                  key={nextProduct.id}
+                  className={styles.rug}
+                  src={nextProduct.image}
+                  alt=""
+                  fill
+                  sizes="(max-width: 900px) 20vw, 24vw"
+                />
+              </Link>
+            )}
           </div>
-          <div className={styles.dots} role="tablist" aria-label="Выбор товара">
-            {products.map((item, index) => (
-              <button
-                key={item.id}
-                type="button"
-                role="tab"
-                aria-selected={index === activeIndex}
-                aria-label={`Товар ${index + 1}: ${item.title}`}
-                className={index === activeIndex ? styles.dotActive : ''}
-                onClick={() => setActiveIndex(index)}
-              />
-            ))}
+          <div className={styles.dots} role="tablist" aria-label="Выбор слайда">
+            {slides.map((slide, index) => {
+              const product = getSlideProduct(slide);
+              const label = product ? product.name : "Оверлок ковров";
+
+              return (
+                <button
+                  key={product?.id ?? "overlock"}
+                  type="button"
+                  role="tab"
+                  aria-selected={index === activeIndex}
+                  aria-label={`Слайд ${index + 1}: ${label}`}
+                  className={index === activeIndex ? styles.dotActive : ""}
+                  onClick={() => setActiveIndex(index)}
+                />
+              );
+            })}
           </div>
           <div className={styles.productInfo} aria-live="polite">
-            <span>{product.category} · {product.material}</span>
-            <strong>{product.title}</strong>
-            <span>{product.size}</span>
+            {currentProduct ? (
+              <>
+                <strong>{currentProduct.name}</strong>
+                {currentProduct.size && <span>{currentProduct.size}</span>}
+              </>
+            ) : null}{" "}
+            {/* Renders absolutely nothing if there is no current product */}
+          </div>
+        </div>
+
+        <div className={styles.supporting}>
+          <div className={styles.meta}>
+            {activeSlide.type === "service" ? overlokInfoHero : null}
           </div>
         </div>
 
         <div className={styles.actions}>
-          <Link className={styles.primaryButton} href="/catalog">
-            Смотреть каталог
+          <Link
+            className={styles.primaryButton}
+            href={activeSlide.type === "service" ? "/contacts" : "/catalog"}
+          >
+            {activeSlide.type === "service"
+              ? "Заказать оверлок"
+              : "Смотреть каталог"}
           </Link>
           <div className={styles.controls}>
             <button
               type="button"
               onClick={handlePrevious}
-              aria-label="Предыдущий товар"
+              aria-label="Предыдущий слайд"
             >
               ‹
             </button>
             <span>
-              {String(activeIndex + 1).padStart(2, '0')} /{' '}
-              {String(count).padStart(2, '0')}
+              {String(activeIndex + 1).padStart(2, "0")} /{" "}
+              {String(count).padStart(2, "0")}
             </span>
             <button
               type="button"
               onClick={handleNext}
-              aria-label="Следующий товар"
+              aria-label="Следующий слайд"
             >
               ›
             </button>
           </div>
-        </div>
-
-        <div className={styles.supporting}>
-          <p className={styles.subtitle}>
-            Текстиль, который меняет пространство
-          </p>
-          <p className={styles.description}>
-            Собрали вещи, в которые влюбляются с первого взгляда. Листайте
-            подборку и найдите свой идеальный фактурный акцент.
-          </p>
-          <p className={styles.meta}>
-            {count} моделей <span /> Новая коллекция <span /> В наличии
-          </p>
-        </div>
-
-        <div className={styles.services} aria-label="Услуги">
-          <Link href="/contacts">
-            <strong>Оверлок</strong>
-            <span>Идеальный край за 1 день →</span>
-          </Link>
-          <Link href="/contacts">
-            <strong>Реставрация</strong>
-            <span>Вернём ковру характер →</span>
-          </Link>
         </div>
       </div>
     </section>

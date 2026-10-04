@@ -966,7 +966,7 @@ img {
 .product-tabs__content .product-detail__row {
   padding: 9px 0;
   border-bottom: 1px solid #aaa;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .product-tabs__content strong {
@@ -1043,6 +1043,12 @@ img {
 
 .cart-list {
   border-top: 1px solid #ededed
+}
+
+.cart-list-col {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
 }
 
 .cart-item {

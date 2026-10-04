@@ -36,7 +36,7 @@ export default function Cart() {
                     >
                       <img src={product.image} alt={product.name} />
                     </Link>
-                    <div>
+                    <div className="cart-list-col">
                       <Link
                         href={`/product/${productSlug(product)}`}
                         className="cart-item__name"
